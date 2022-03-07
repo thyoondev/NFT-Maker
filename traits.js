@@ -23,3 +23,8 @@ const background = [
    ,{id: 09, name: 'bg-nine'}
    ,{id: 10, name: 'bg-ten'}
 ];
+
+module.exports = {
+    cat,
+    background
+}
