@@ -1,5 +1,5 @@
 const { cat, background } = require("./traits.js");
-
+const { create } = require("./create.js");
 
 const NUM_OF_CATS = 10;
 const NUM_OF_BACKGROUND = 10;
@@ -57,3 +57,11 @@ while (NFTs.length < TARGET_NUM_OF_NFT) {
 
 console.log(`TOTAL_NUM_OF_NFT = ${NFTs.length}`);
 console.log(`TOTAL_NUM_OF_RARITY = ${totalCountOfRareTrait}`);
+
+(async () => {
+    console.log("Creating...");
+    //for (let i=0; i<NFTs.length; i++) {
+    for (let i=0; i<NFTs.length; i++) {
+        await create(NFTs[i], i);
+    }
+})();
