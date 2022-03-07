@@ -1,12 +1,15 @@
 const { cat, background } = require("./traits.js");
 
+
 const NUM_OF_CATS = 10;
 const NUM_OF_BACKGROUND = 10;
 
+const TARGET_NUM_OF_NFT = 10; //발행 목표 수량
 const RARE_TRAIT = 3;
 const MAX_NUM_OF_RARITY = 2;
 
 let NFTs = [];
+let totalCountOfRareTrait = 0;
 
 // 난수 발생
 const fnRng = (limit) => {
@@ -51,3 +54,6 @@ while (NFTs.length < TARGET_NUM_OF_NFT) {
         //if (n[0] === 3) console.log(`RARITY=${NFTs.length}`);
     }
 }
+
+console.log(`TOTAL_NUM_OF_NFT = ${NFTs.length}`);
+console.log(`TOTAL_NUM_OF_RARITY = ${totalCountOfRareTrait}`);
