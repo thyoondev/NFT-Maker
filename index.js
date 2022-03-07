@@ -3,6 +3,9 @@ const { cat, background } = require("./traits.js");
 const NUM_OF_CATS = 10;
 const NUM_OF_BACKGROUND = 10;
 
+const RARE_TRAIT = 3;
+const MAX_NUM_OF_RARITY = 2;
+
 let NFTs = [];
 
 // 난수 발생
@@ -25,4 +28,26 @@ const fnGenerateWithoutRedundancy = () => {
         }
     }
     return nftTobe;
+}
+
+// 특정 trait 를 가진 토큰이 일정수량을 넘지 못하도록 조절
+const fnCheckRareTrait = (t) => {
+    if (NFTs.length > 0 && t === RARE_TRAIT) {
+        totalCountOfRareTrait++;
+        if (totalCountOfRareTrait > MAX_NUM_OF_RARITY) {
+            totalCountOfRareTrait--;
+            return fnCheckRareTrait(background[fnRng(NUM_OF_BACKGROUND)].id);
+        }
+        return t;
+    } else {
+        return t;
+    }
+}
+
+while (NFTs.length < TARGET_NUM_OF_NFT) {
+    const n = fnGenerateWithoutRedundancy();
+    if (n !== null) {
+        NFTs.push(n);
+        //if (n[0] === 3) console.log(`RARITY=${NFTs.length}`);
+    }
 }
