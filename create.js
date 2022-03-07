@@ -24,3 +24,7 @@ const create = async (t, i) => {
     saveImage(canvas, i+1);
    
    };
+
+   module.exports = {
+    create
+}
