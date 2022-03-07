@@ -6,6 +6,7 @@
   "author": "thyoondev <thyoondev@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "canvas": "^2.9.0"
+    "canvas": "^2.9.0",
+    "nft.storage": "^6.0.1"
   }
 }
