@@ -3,7 +3,7 @@ const fs = require('fs');
 const { convertGatewayUrl } = require('./file.js');
 const META_FILE = './meta.href.txt';
 
-const TOTAL_NUMBER = 10;
+const TOTAL_NUMBER = 20;
 
 for (let k = 1; k <= TOTAL_NUMBER; k++) {
   convertGatewayUrl(k).then((uri) => {
