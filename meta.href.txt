@@ -1,0 +1,10 @@
+1=https://nftstorage.link/ipfs/bafyreicaupcm32egqq7knyzdoyuwzg3u6casgbyrachnpm2d7ouoko7ytm/metadata.json
+2=https://nftstorage.link/ipfs/bafyreibvefdsvc2zcgbteobmj7nafa3jcumc2k5pdbjttjfjr6izswoqyq/metadata.json
+3=https://nftstorage.link/ipfs/bafyreiekyaifavwtahl6ykhnrqu4t5thllbt3gxtnwu2b6uvsbbtmnqmv4/metadata.json
+4=https://nftstorage.link/ipfs/bafyreid55iiq4eybciquezw2lwfd3qd6fdsk534jxcdubgaq5gngowhq2m/metadata.json
+5=https://nftstorage.link/ipfs/bafyreibc66xk2wf37p6ibyyrvwqdnirf652bsp4ifsdfmbke52hydftakm/metadata.json
+6=https://nftstorage.link/ipfs/bafyreiayzopkn3bxepg6lcbyzkqsuhrhzm3jblnkgkcuec3htdsebspnfu/metadata.json
+7=https://nftstorage.link/ipfs/bafyreierdzgrgja7iwetusctkyjzqbfi2ngqkgdsdqe5wmkjdayqgbvyxa/metadata.json
+8=https://nftstorage.link/ipfs/bafyreib4tkg4ou7wlqoourgrbnclclxvqhbsvq4dhorbljxc3dz6m4di2q/metadata.json
+9=https://nftstorage.link/ipfs/bafyreiag4tijayk7zvxzlkgbsgnw3uitshyro2jlfgupvgc2jzm66mwqfy/metadata.json
+10=https://nftstorage.link/ipfs/bafyreif5etkjpzdkjdtrp4iqidd4gf623pa6erc7wbzqdzadze6gyjguky/metadata.json

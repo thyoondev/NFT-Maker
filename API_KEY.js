@@ -1,1 +1,3 @@
-export const API_KEY = "";
+const API_KEY = '';
+
+module.exports = API_KEY;
