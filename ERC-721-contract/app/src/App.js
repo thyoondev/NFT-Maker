@@ -4,6 +4,8 @@ import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 import WalletModal from './modals/WalletModal';
 import { ethers } from 'ethers';
 import { isEmpty } from 'lodash';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import NFTList from './list/NFTList';
 
 const Context = createContext();
 const Provider = Context.Provider;
@@ -70,7 +72,16 @@ function App() {
             </Button>
           </Toolbar>
         </AppBar>
-        <Box sx={{ paddingLeft: '20px', paddingTop: '20px' }}>{/* NFT List */}</Box>
+        <Box sx={{ paddingLeft: '20px', paddingTop: '20px' }}>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/'>
+                <Route path=':pageNo' element={<NFTList />} />
+                <Route path='' element={<NFTList />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </Box>
         <WalletModal open={open} close={handleClose} />
       </Fragment>
     </Provider>
