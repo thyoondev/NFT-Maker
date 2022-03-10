@@ -25,7 +25,14 @@ function WalletModal(props) {
 
   const handleConnectMM = async () => {
     try {
-      await injectedWeb3Connector.activate().then((p) => {
+      await injectedWeb3Connector.activate();
+
+      if ((await injectedWeb3Connector.getChainId()) !== '0x4') {
+        const p = await injectedWeb3Connector.getProvider();
+        await p.send('wallet_switchEthereumChain', [{ chainId: '0x4' }]);
+      }
+
+      injectedWeb3Connector.getProvider().then((p) => {
         setWeb3(new ethers.providers.Web3Provider(p));
       });
     } catch (err) {
@@ -35,7 +42,6 @@ function WalletModal(props) {
       }
     }
   };
-
   const handleConnectWC = async () => {
     //TODO
   };
