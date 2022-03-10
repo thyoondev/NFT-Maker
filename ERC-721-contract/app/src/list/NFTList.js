@@ -2,7 +2,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import Metadata from './Metadata';
 import { Button, ButtonGroup, Card, CardActions, ImageList, ImageListItem } from '@mui/material';
-import { Fragment } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
+import { Context } from '../App';
+import { getTokenURI, saveMintedItems } from '../utils';
+import { ethers } from 'ethers';
+import artifact from '../contracts/CYBERVATnft.json';
 
 const ITEMS_PER_PAGE = 9;
 const TOTAL_COUNT = 20;
@@ -15,6 +19,15 @@ function NFTList() {
   let list = [];
   const params = useParams();
   const navigate = useNavigate();
+  const OWNER = '0x5A2609D698DE041B1Ba77139A4229c8a161dDd9e';
+
+  const CYBERCATNft = useContext(Context).CYBERCATNft;
+  const defaultProvider = useContext(Context).defaultProvider;
+
+  const [minted, setMinted] = useState('');
+
+  const next = localStorage.getItem('CYBERCAT.next');
+  localStorage.setItem('CYBERCAT.next', startIndex + ITEMS_PER_PAGE);
 
   for (let i = 0; i < ITEMS_PER_PAGE; i++) {
     list.push(i);
@@ -31,9 +44,6 @@ function NFTList() {
     }
   }
 
-  const next = localStorage.getItem('CYBERCAT.next');
-  localStorage.setItem('CYBERCAT.next', startIndex + ITEMS_PER_PAGE);
-
   const handleNext = () => {
     const v = parseInt(next / ITEMS_PER_PAGE) + 1;
     if (v <= LAST_PAGE) {
@@ -48,12 +58,41 @@ function NFTList() {
     }
   };
 
+  const handleMint = async (e) => {
+    if (CYBERCATNft !== null) {
+      const tokenId = e.target.getAttribute('tokenid');
+      const tokenURI = await getTokenURI(tokenId);
+
+      const tx = await CYBERCATNft.mint(OWNER, tokenId, tokenURI, { gasLimit: 3000000 });
+      try {
+        await tx.wait();
+      } catch (error) {
+        console.log(error.reason);
+      }
+    } else {
+      console.log('WALLET DISCONNECTED');
+    }
+  };
+
+  useEffect(() => {
+    if (CYBERCATNft !== null) {
+      const alsNftInterface = new ethers.utils.Interface(artifact.contracts.ALSnft.abi);
+      defaultProvider.on({ address: CYBERCATNft.address }, (logs) => {
+        const result = alsNftInterface.parseLog(logs);
+        saveMintedItems(result.args.tokenId.toString());
+        setMinted(result.args.tokenId.toString());
+      });
+    } else {
+      console.log('NULL');
+    }
+  }, [CYBERCATNft]);
+
   const item = (i) => (
     <ImageListItem key={i}>
       <Card sx={{ maxWidth: '180px' }}>
         <Metadata id={i + 1} />
         <CardActions>
-          <Button color='primary' variant='contained'>
+          <Button color='primary' variant='contained' onClick={handleMint} tokenid={i + 1}>
             mint
           </Button>
           <Button color='primary' variant='contained'>
