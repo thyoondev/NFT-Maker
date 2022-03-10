@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Button, Modal } from '@mui/material';
 import { ethers } from 'ethers';
+import { InjectedConnector, UserRejectedRequestError as UserRejectedRequestErrorMM } from '@web3-react/injected-connector';
+import { Context } from '../App';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -14,9 +17,23 @@ const style = {
   display: 'flex',
   flexDirection: 'column',
 };
+
+const injectedWeb3Connector = new InjectedConnector({ supportedChainIds: [1, 4] });
+
 function WalletModal(props) {
+  const setWeb3 = useContext(Context).setWeb3;
+
   const handleConnectMM = async () => {
-    //TODO
+    try {
+      await injectedWeb3Connector.activate().then((p) => {
+        setWeb3(new ethers.providers.Web3Provider(p));
+      });
+    } catch (err) {
+      if (err instanceof UserRejectedRequestErrorMM) {
+        console.log('UserRejectedRequest...');
+        props.close();
+      }
+    }
   };
 
   const handleConnectWC = async () => {
