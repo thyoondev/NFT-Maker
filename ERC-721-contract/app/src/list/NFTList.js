@@ -1,13 +1,14 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import Metadata from './Metadata';
-import { Button, ButtonGroup, Card, CardActions, ImageList, ImageListItem } from '@mui/material';
+import { Button, ButtonGroup, Card, CardActions, ImageList, ImageListItem, Popover, Typography } from '@mui/material';
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { Context } from '../App';
 import { getTokenURI, isMintedItems, saveMintedItems } from '../utils';
 import { ethers } from 'ethers';
 import artifact from '../contracts/CYBERCATnft.json';
 import { OWNER } from '../utils/constants';
+import { OpenSeaPort, Network } from 'opensea-js';
 
 const ITEMS_PER_PAGE = 9;
 const TOTAL_COUNT = 20;
@@ -25,7 +26,15 @@ function NFTList() {
   const CYBERCATNft = useContext(Context).CYBERCATNft;
   const defaultProvider = useContext(Context).defaultProvider;
 
+  const seaport = new OpenSeaPort(defaultProvider, {
+    networkName: Network.Rinkeby,
+    apiKey: '', // API키가 없어도 된다.
+  });
+
   const [minted, setMinted] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [text, setText] = useState('');
+  const open = Boolean(anchorEl);
 
   const next = localStorage.getItem('CYBERCAT.next');
   localStorage.setItem('CYBERCAT.next', startIndex + ITEMS_PER_PAGE);
@@ -67,11 +76,30 @@ function NFTList() {
       const tx = await CYBERCATNft.mint(OWNER, tokenId, tokenURI, { gasLimit: 3000000 });
       try {
         await tx.wait();
+        console.log(`${minted} minted successfully`);
       } catch (error) {
         console.log(error.reason);
       }
     } else {
       console.log('WALLET DISCONNECTED');
+    }
+  };
+
+  const handleSale = async (e) => {
+    if (CYBERCATNft !== null) {
+      setAnchorEl(e.currentTarget);
+
+      let m = '';
+      const tokenId = e.target.getAttribute('tokenid');
+      const asset = await seaport.api.getAsset({ tokenAddress: CYBERCATNft.address, tokenId });
+      if (asset.lastSale !== null) {
+        m = `Sold out! Ξ${ethers.utils.formatEther(asset.lastSale.totalPrice)}`;
+      } else if (asset.sellOrders !== null) {
+        m = `Listed Ξ${ethers.utils.formatEther(asset.sellOrders[0].basePrice.toString())}`;
+      } else {
+        m = 'To be listed';
+      }
+      setText(m);
     }
   };
 
@@ -88,6 +116,11 @@ function NFTList() {
     }
   }, [CYBERCATNft]);
 
+  const handleClose = () => {
+    setText('');
+    setAnchorEl(null);
+  };
+
   const item = (i) => (
     <ImageListItem key={i}>
       <Card sx={{ maxWidth: '180px' }}>
@@ -100,9 +133,20 @@ function NFTList() {
               mint
             </Button>
           )}
-          <Button color='primary' variant='contained'>
+          <Button color='primary' variant='contained' onClick={handleSale} tokenid={i + 1}>
             sale
           </Button>
+          <Popover
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+          >
+            <Typography style={{ paddingTop: 20, paddingRight: 20, paddingBottom: 20, paddingLeft: 20 }}>{text}</Typography>
+          </Popover>
         </CardActions>
       </Card>
     </ImageListItem>
