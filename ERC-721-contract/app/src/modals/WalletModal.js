@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Box, Button, Modal } from '@mui/material';
 import { ethers } from 'ethers';
 import { InjectedConnector, UserRejectedRequestError as UserRejectedRequestErrorMM } from '@web3-react/injected-connector';
+import { WalletConnectConnector, UserRejectedRequestError as UserRejectedRequestErrorWC } from '@web3-react/walletconnect-connector';
 import { Context } from '../App';
 
 const style = {
@@ -19,6 +20,14 @@ const style = {
 };
 
 const injectedWeb3Connector = new InjectedConnector({ supportedChainIds: [1, 4] });
+
+const walletConnecter = new WalletConnectConnector({
+  rpc: {
+    //1: 'https://eth-mainnet.alchemyapi.io/v2/...LWAZ', //mainnet
+    4: 'https://eth-rinkeby.alchemyapi.io/v2/0ND80KB7JSKs4TaLqsb-A6qdMRju718I', //rinkeby
+  },
+  qrcode: true,
+});
 
 function WalletModal(props) {
   const setWeb3 = useContext(Context).setWeb3;
@@ -43,7 +52,19 @@ function WalletModal(props) {
     }
   };
   const handleConnectWC = async () => {
-    //TODO
+    try {
+      await walletConnecter.activate();
+
+      walletConnecter.getProvider().then((p) => {
+        setWeb3(new ethers.providers.Web3Provider(p));
+      });
+    } catch (err) {
+      if (err instanceof UserRejectedRequestErrorWC) {
+        console.log('UserRejectedRequest...');
+        walletConnecter.walletConnectProvider = undefined;
+        props.close();
+      }
+    }
   };
 
   return (
