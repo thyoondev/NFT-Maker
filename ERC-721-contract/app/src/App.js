@@ -5,8 +5,10 @@ import WalletModal from './modals/WalletModal';
 import { ethers } from 'ethers';
 import { isEmpty } from 'lodash';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
+import { RPC_ENDPOINT_RINKEBY_ALCHEMY } from './utils/constants';
 import NFTList from './list/NFTList';
-import artifact from './contracts/CYBERVATnft.json';
+import artifact from './contracts/CYBERCATnft.json';
 
 const Context = createContext();
 const Provider = Context.Provider;
@@ -23,6 +25,7 @@ function App() {
   const [btnText, setBtnText] = useState(CONNECT_TEXT);
 
   const [CYBERCATNft, setCYBERCATNft] = useState(null);
+  const defaultProvider = ethers.getDefaultProvider(RPC_ENDPOINT_RINKEBY_ALCHEMY);
 
   const handleOpen = async () => {
     if (btnText === DISCONNECT_TEXT) {
@@ -67,7 +70,7 @@ function App() {
   }, [web3]);
 
   return (
-    <Provider value={{ setWeb3, CYBERCATNft }}>
+    <Provider value={{ setWeb3, CYBERCATNft, defaultProvider }}>
       <Fragment>
         <AppBar position='static'>
           <Toolbar>

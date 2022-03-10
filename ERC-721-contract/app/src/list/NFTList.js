@@ -4,9 +4,10 @@ import Metadata from './Metadata';
 import { Button, ButtonGroup, Card, CardActions, ImageList, ImageListItem } from '@mui/material';
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { Context } from '../App';
-import { getTokenURI, saveMintedItems } from '../utils';
+import { getTokenURI, isMintedItems, saveMintedItems } from '../utils';
 import { ethers } from 'ethers';
-import artifact from '../contracts/CYBERVATnft.json';
+import artifact from '../contracts/CYBERCATnft.json';
+import { OWNER } from '../utils/constants';
 
 const ITEMS_PER_PAGE = 9;
 const TOTAL_COUNT = 20;
@@ -19,8 +20,8 @@ function NFTList() {
   let list = [];
   const params = useParams();
   const navigate = useNavigate();
-  const OWNER = '0x5A2609D698DE041B1Ba77139A4229c8a161dDd9e';
 
+  // 컨텍스트는 app.js에서 전달해준다.
   const CYBERCATNft = useContext(Context).CYBERCATNft;
   const defaultProvider = useContext(Context).defaultProvider;
 
@@ -76,9 +77,9 @@ function NFTList() {
 
   useEffect(() => {
     if (CYBERCATNft !== null) {
-      const alsNftInterface = new ethers.utils.Interface(artifact.contracts.ALSnft.abi);
+      const CYBERCATNftInterface = new ethers.utils.Interface(artifact.contracts.CYBERCATnft.abi);
       defaultProvider.on({ address: CYBERCATNft.address }, (logs) => {
-        const result = alsNftInterface.parseLog(logs);
+        const result = CYBERCATNftInterface.parseLog(logs);
         saveMintedItems(result.args.tokenId.toString());
         setMinted(result.args.tokenId.toString());
       });
@@ -92,9 +93,13 @@ function NFTList() {
       <Card sx={{ maxWidth: '180px' }}>
         <Metadata id={i + 1} />
         <CardActions>
-          <Button color='primary' variant='contained' onClick={handleMint} tokenid={i + 1}>
-            mint
-          </Button>
+          {isMintedItems(i + 1) ? (
+            ''
+          ) : (
+            <Button color='primary' variant='contained' onClick={handleMint} tokenid={i + 1}>
+              mint
+            </Button>
+          )}
           <Button color='primary' variant='contained'>
             sale
           </Button>
